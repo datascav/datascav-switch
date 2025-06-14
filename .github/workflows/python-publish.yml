@@ -26,6 +26,30 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Extract version from tag
+        id: get_version
+        run: |
+          # Remove 'v' prefix if it exists and set the version
+          VERSION=${GITHUB_REF#refs/tags/}
+          VERSION=${VERSION#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
+
+      - name: Update version in setup.py/pyproject.toml
+        run: |
+          # Update version in pyproject.toml if it exists
+          if [ -f "pyproject.toml" ]; then
+            sed -i "s/version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" pyproject.toml
+            echo "Version updated in pyproject.toml to: ${{ steps.get_version.outputs.version }}"
+          fi
+          
+          # Update version in setup.py if it exists
+          if [ -f "setup.py" ]; then
+            sed -i "s/version=\".*\"/version=\"${{ steps.get_version.outputs.version }}\"/" setup.py
+            sed -i "s/version='.*'/version='${{ steps.get_version.outputs.version }}'/" setup.py
+            echo "Version updated in setup.py to: ${{ steps.get_version.outputs.version }}"
+          fi
+
       - name: Build release distributions
         run: |
           # NOTE: put your own distribution build steps here.
@@ -51,11 +75,11 @@ jobs:
     environment:
       name: pypi
       # OPTIONAL: uncomment and update to include your PyPI project URL in the deployment status:
-      # url: https://pypi.org/p/YOURPROJECT
+      # url: https://pypi.org/p/datascav-switch
       #
       # ALTERNATIVE: if your GitHub Release name is the PyPI project version string
       # ALTERNATIVE: exactly, uncomment the following line instead:
-      # url: https://pypi.org/project/YOURPROJECT/${{ github.event.release.name }}
+      # url: https://pypi.org/project/datascav-switch/${{ github.event.release.name }}
 
     steps:
       - name: Retrieve release distributions
