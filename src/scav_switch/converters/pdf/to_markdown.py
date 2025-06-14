@@ -86,6 +86,7 @@ class ScavToMarkdown:
             raise ModelIncompatibilityError(
                 f"Model '{model}' is not compatible. Only 'gpt-4.1' and 'gpt-4o' are supported for PDF to Markdown conversion."
             )
+
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
@@ -414,4 +415,3 @@ def pdf_to_markdown(
     """
     converter = ScavToMarkdown(callbacks=callbacks)
     return converter.dig(pdf_input)
-
