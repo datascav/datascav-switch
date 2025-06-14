@@ -1,0 +1,43 @@
+# Byte-compiled / arquivos cacheados
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambientes virtuais
+venv/
+env/
+.venv/
+.env/
+
+# Arquivos de configuração de IDEs
+.vscode/
+.cursor/
+.idea/
+
+# Arquivos de log
+*.log
+
+# Arquivos de banco de dados locais
+*.sqlite3
+*.db
+
+# Arquivos de pacotes
+*.egg-info/
+dist/
+build/
+
+# Arquivos de variáveis de ambiente
+.env
+.env.*
+
+# Arquivos de testes
+.coverage
+.tox/
+.nox/
+
+# Outros arquivos temporários
+.DS_Store
+Thumbs.db
+# Arquivos de cache do pip
+pip-wheel-metadata/
+# End Generation Here
