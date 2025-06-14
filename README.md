@@ -1,6 +1,6 @@
 # datascav-switch
 
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
 [![LangChain](https://img.shields.io/badge/langchain-ecosystem-blueviolet)](https://github.com/langchain-ai/langchain)
 [![OpenAI](https://img.shields.io/badge/openai-required-important)](https://platform.openai.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -26,7 +26,7 @@ pip install datascav-switch
 ```
 
 > **Requirements:**
-> - Python 3.10+
+> - Python 3.12+
 > - OpenAI API key (`OPENAI_API_KEY`)
 
 ---
