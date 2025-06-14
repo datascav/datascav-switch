@@ -23,7 +23,8 @@ def pdf_to_image_base64_list(pdf_path: str, zoom: float = 2.0) -> List[str]:
             matrix = fitz.Matrix(zoom, zoom)
             pixmap = page.get_pixmap(matrix=matrix)
             image_bytes = pixmap.tobytes(output="png")
-            image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+            image_base64 = base64.b64encode(image_bytes)
+            image_base64 = image_base64.decode('utf-8')
             images_base64.append(image_base64)
         pdf_document.close()
     except Exception as e:

@@ -5,7 +5,9 @@ Autor: Dayvid Borges
 Título: PDF to Markdown Converter with Class Architecture and Parameterized Logging
 
 Descrição:
-ScavToMarkdown class to transcribe PDFs into markdown using OpenAI models via LangChain. Accepts file path, bytes, URL, or base64 string as input, with parameterized logging system and optimized object-oriented architecture.
+ScavToMarkdown class to transcribe PDFs into markdown using OpenAI models via LangChain. 
+Accepts file path, bytes, URL, or base64 string as input, with parameterized logging system 
+and optimized object-oriented architecture.
 
 Dependências:
 - langchain_openai
@@ -412,3 +414,4 @@ def pdf_to_markdown(
     """
     converter = ScavToMarkdown(callbacks=callbacks)
     return converter.dig(pdf_input)
+
