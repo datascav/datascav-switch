@@ -129,7 +129,9 @@ class ScavToMarkdown:
             timeout=self.timeout
         )
 
-        self.logger.info(f'ScavToMarkdown initialized - Project: {os.getenv("LANGSMITH_PROJECT")}')
+        self.logger.info(
+            f'ScavToMarkdown initialized - Project: {os.getenv("LANGSMITH_PROJECT")}'
+        )
 
     def _setup_logger(self, log_level: str) -> logging.Logger:
         """Configures the logging system with a friendly logger name."""
@@ -233,8 +235,10 @@ class ScavToMarkdown:
         formatted_result = result.replace('```markdown', '').replace('```', '')
 
         # Token counting (input: prompt + file, output: result)
-        prompt_text = self.system_prompt + "\n" + \
+        prompt_text = (
+            self.system_prompt + "\n" +
             "Transcribe the text from the provided image in markdown format, without omitting any text."
+        )
         input_tokens = self._count_tokens(prompt_text)
         output_tokens = self._count_tokens(formatted_result)
         total_tokens = input_tokens + output_tokens
@@ -293,8 +297,10 @@ class ScavToMarkdown:
         formatted_result = result.replace('```markdown', '').replace('```', '')
 
         # Token counting (input: prompt + image, output: result)
-        prompt_text = self.system_prompt + "\n" + \
+        prompt_text = (
+            self.system_prompt + "\n" +
             "Transcribe the text from the provided image in markdown format, without omitting any text."
+        )
         input_tokens = self._count_tokens(prompt_text)
         output_tokens = self._count_tokens(formatted_result)
         total_tokens = input_tokens + output_tokens
