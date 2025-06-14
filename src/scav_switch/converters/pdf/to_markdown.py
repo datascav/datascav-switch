@@ -132,8 +132,8 @@ class ScavToMarkdown:
             timeout=self.timeout
         )
 
-        self.logger.info(
-            'ScavToMarkdown initialized - Project: %s', os.getenv("LANGSMITH_PROJECT")
+        self._log(
+            'INFO', 'ScavToMarkdown initialized - Project: %s' % os.getenv("LANGSMITH_PROJECT")
         )
 
     def _setup_logger(self, log_level: str) -> logging.Logger:
@@ -149,18 +149,18 @@ class ScavToMarkdown:
             logger.addHandler(handler)
         return logger
 
-    def _log(self, level: str, message: str) -> None:
+    def _log(self, level: str, message: str, *args) -> None:
         """Parameterized logging."""
         if not self.verbose:
             return
         log_method = getattr(self.logger, level.lower(), self.logger.info)
-        log_method(message)
+        log_method(message, *args)
 
     def _get_pdf_bytes(self, source: Union[str, bytes]) -> bytes:
         """
         Receives a file path, bytes, URL, or base64 string and returns the PDF bytes.
         """
-        self._log("DEBUG", f"Processing input of type: {type(source)}")
+        self._log("DEBUG", "Processing input of type: %s", type(source))
 
         if isinstance(source, bytes):
             self._log("DEBUG", "Input identified as bytes")
@@ -183,7 +183,7 @@ class ScavToMarkdown:
 
             # Check if URL
             if source.startswith('http://') or source.startswith('https://'):
-                self._log("DEBUG", f"Downloading PDF from URL: {source}")
+                self._log("DEBUG", "Downloading PDF from URL: %s", source)
                 resp = requests.get(source, timeout=self.timeout)
                 if resp.status_code != 200:
                     raise ValueError(f"Failed to download PDF from URL: {source}")
@@ -191,7 +191,7 @@ class ScavToMarkdown:
 
             # Check if file path
             if os.path.isfile(source):
-                self._log("DEBUG", f"Reading file: {source}")
+                self._log("DEBUG", "Reading file: %s", source)
                 with open(source, 'rb') as f:
                     return f.read()
 
@@ -201,7 +201,7 @@ class ScavToMarkdown:
 
     def _retry_process_with_pdf(self, pdf_base64: str, page_index: int) -> dict:
         """Processes page using PDF format as fallback."""
-        self._log("WARNING", f"Trying to process page {page_index} with PDF format")
+        self._log("WARNING", "Trying to process page %s with PDF format", page_index)
 
         pdf_bytes = base64.b64decode(pdf_base64)
 
@@ -257,7 +257,7 @@ class ScavToMarkdown:
             'fallback_pdf': True
         })
 
-        self._log("DEBUG", f"Page {page_index} processed successfully")
+        self._log("DEBUG", "Page %s processed successfully", page_index)
 
         return {
             'page': page_index,
@@ -272,7 +272,7 @@ class ScavToMarkdown:
     def _process_image(self, data: dict, pages_base64: list) -> dict:
         """Processes a single image page."""
         page_num = data.get("pagina")
-        self._log("DEBUG", f"Processing page: {page_num}")
+        self._log("DEBUG", "Processing page: %s", page_num)
 
         messages = [
             SystemMessage(content=self.system_prompt),
@@ -292,7 +292,7 @@ class ScavToMarkdown:
         try:
             response = self.llm.invoke(messages)
         except APITimeoutError:
-            self._log("WARNING", f"Timeout on page {page_num} - Trying with PDF")
+            self._log("WARNING", "Timeout on page %s - Trying with PDF", page_num)
             pdf_base64 = pages_base64[page_num]
             return self._retry_process_with_pdf(pdf_base64, page_num)
 
@@ -318,7 +318,7 @@ class ScavToMarkdown:
             'total': total_tokens
         })
 
-        self._log("DEBUG", f"Page {page_num} processed successfully")
+        self._log("DEBUG", "Page %s processed successfully", page_num)
 
         return {
             'page': page_num,
@@ -351,13 +351,13 @@ class ScavToMarkdown:
                 tmp_file.write(pdf_bytes)
                 temp_pdf_path = tmp_file.name
 
-            self._log("DEBUG", f"Temporary file created: {temp_pdf_path}")
+            self._log("DEBUG", "Temporary file created: %s", temp_pdf_path)
 
             # Extract images and pages
             img_b64_list = pdf_to_image_base64_list(temp_pdf_path)
             pages_base64 = pdf_to_pages_base64(temp_pdf_path)
 
-            self._log("INFO", f"Extracted {len(img_b64_list)} pages from PDF")
+            self._log("INFO", "Extracted %d pages from PDF", len(img_b64_list))
 
         finally:
             # Clean up temporary file
@@ -374,7 +374,7 @@ class ScavToMarkdown:
             for index, bytes64 in enumerate(img_b64_list)
         ]
 
-        self._log("INFO", f"Starting parallel processing with {self.max_workers} workers")
+        self._log("INFO", "Starting parallel processing with %d workers", self.max_workers)
 
         # Parallel processing
         transcribed_pages = []
@@ -401,7 +401,7 @@ class ScavToMarkdown:
         for page in transcribed_pages:
             transcription += page['data'] + '\n'
 
-        self._log("INFO", f"Conversion completed - {len(transcription)} characters generated")
+        self._log("INFO", "Conversion completed - %d characters generated", len(transcription))
 
         return transcription
 

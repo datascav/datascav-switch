@@ -1,34 +1,39 @@
 
-Design and build  
-accessible PDF tables  
-Sample tables
+# Design and build accessible PDF tables
+## Sample tables
 
-Table 1
+---
 
-| Column header (TH) | Column header (TH) | Column header (TH) |
-|--------------------|--------------------|--------------------|
-| **Row header (TH)** | Data cell (TD)     | Data cell (TD)     |
-| **Row header(TH)**  | Data cell (TD)     | Data cell (TD)     |
+### Table 1
 
-**Table 2: example of footnotes referenced from within a table**
+| **Column header (TH)** | **Column header (TH)** | **Column header (TH)** |
+|------------------------|------------------------|------------------------|
+| **Row header (TH)**    | Data cell (TD)         | Data cell (TD)         |
+| **Row header(TH)**     | Data cell (TD)         | Data cell (TD)         |
 
-| Expenditure by function £ million | 2009/10 | 2010/11 ¹ |
-|-----------------------------------|---------|-----------|
-| **Policy functions**              |         |           |
-| Financial                         | 22.5    | 30.57     |
-| Information ²                     | 10.2    | 14.8      |
-| Contingency                       | 2.6     | 1.2       |
-| **Remunerated functions**         |         |           |
-| Agency services ³                 | 44.7    | 35.91     |
-| Payments                          | 22.41   | 19.88     |
-| Banking                           | 22.90   | 44.23     |
-| Other                             | 12.69   | 10.32     |
+---
+
+### Table 2: example of footnotes referenced from within a table
+
+| **Expenditure by function £ million** | **2009/10** | **2010/11 ¹** |
+|---------------------------------------|-------------|---------------|
+| **Policy functions**                  |             |               |
+| Financial                             | 22.5        | 30.57         |
+| Information ²                         | 10.2        | 14.8          |
+| Contingency                           | 2.6         | 1.2           |
+| **Remunerated functions**             |             |               |
+| Agency services ³                     | 44.7        | 35.91         |
+| Payments                              | 22.41       | 19.88         |
+| Banking                               | 22.90       | 44.23         |
+| Other                                 | 12.69       | 10.32         |
 
 (1) Provisional total as of publication date.  
 (2) Costs associated with on-going information programmes.  
 (3) From the management accounts, net of recoveries, including interest charges.
 
-**Table 3: "film credits" style layout**
+---
+
+### Table 3: "film credits" style layout
 
 | **Main character** | Daniel Radcliffe   |
 |--------------------|-------------------|
@@ -37,6 +42,7 @@ Table 1
 | **Lovable ogre**   | Robbie Coltrane   |
 | **Professor**      | Maggie Smith      |
 | **Headmaster**     | Richard Harris    |
+
 
 
 **Table 4: table 3 with column headers added**
@@ -55,11 +61,11 @@ Table 1
 
 |                      | 2010 | 2009 | 2008 |
 |----------------------|------|------|------|
-| **Non-current assets**      |      |      |      |
+| **Non-current assets** |      |      |      |
 | Property             | 345  | 445  | 222  |
 | Investment           | 567  | 654  | 423  |
 | Intangibles          | 423  | 123  | 453  |
-| **Current assets**          |      |      |      |
+| **Current assets**     |      |      |      |
 | Trade and other receivables | 435  | 634  | 231  |
 | Cash and cash equivalents   | 524  | 123  | 482  |
 | Other                | 223  | 211  | 254  |
@@ -70,12 +76,12 @@ Table 1
 | Rainfall (inches) | Americas | Asia | Europe | Africa |
 |-------------------|----------|------|--------|--------|
 |                   |          |      |        |        |
-|       **2010**    |          |      |        |        |
+| **2010**          |          |      |        |        |
 | Average           | 104      | 201  | 193    | 144    |
 | 24 hour high      | 15       | 26   | 27     | 18     |
 | 12 hour high      | 9        | 10   | 11     | 12     |
 |                   |          |      |        |        |
-|       **2009**    |          |      |        |        |
+| **2009**          |          |      |        |        |
 | Average           | 133      | 244  | 155    | 166    |
 | 24 hour high      | 27       | 28   | 29     | 20     |
 | 12 hour high      | 11       | 12   | 13     | 16     |
@@ -147,12 +153,12 @@ Table 11: self-contained year-end statement (£, thousands) (multiple problems r
 
 **Table 12: merged data cells are not recommended**
 
-|         |      2008      |      2009      |
-|---------|:-----:|:-----:|:-----:|:-----:|
-| Name    | Yes   | No    | Yes   | No    |
-| Bob     | 2     | 5     | 6     | 7     |
-| Sue     | 3     | 8     | 4     | 7     |
-| Sam     | [data relating to both columns in a single cell spanning both] | [data relating to both columns in a single cell spanning both] |
+|        |      2008      |      |      2009      |      |
+|--------|:--------------:|:----:|:--------------:|:----:|
+| Name   | Yes            | No   | Yes            | No   |
+| Bob    | 2              | 5    | 6              | 7    |
+| Sue    | 3              | 8    | 4              | 7    |
+| Sam    | [data relating to both columns in a single cell spanning both] |      | [data relating to both columns in a single cell spanning both] |      |
 
 ---
 
@@ -200,7 +206,6 @@ Table 11: self-contained year-end statement (£, thousands) (multiple problems r
 | Mathematics            | Yes  | No   | No   | No   |
 | English                | Yes  | Yes  | Yes  | Yes  |
 
----
 
 **Table 17: accounts, 2011 (£, thousands)**
 
@@ -220,7 +225,6 @@ Table 11: self-contained year-end statement (£, thousands) (multiple problems r
 | **Costs subtotal**     | **200,000**|
 | **Balance**            | **30,000**|
 
----
 
 **Table 18: accounts, 2011 (£, thousands)**
 
@@ -241,7 +245,6 @@ Table 11: self-contained year-end statement (£, thousands) (multiple problems r
 | **Balance**            | 30,000      |
 
 
-
 Table 19: Human Development Index (HDI)  
 trends, 1980 to 2010. Source: Barro-Lee March, 2010
 
@@ -253,27 +256,26 @@ trends, 1980 to 2010. Source: Barro-Lee March, 2010
 | Andorra      | 4.98 | 5.63 | 9.09 | 10.35 |
 | Angola       |  -   |  -   | 4.42 | 4.42  |
 
----
 
 Table 20: footnotes referenced from within a table
 
 | Expenditure by function £million | 2009/10 | 2010/11¹ |
 |----------------------------------|---------|----------|
 | **Policy functions**             |         |          |
-| Financial                        |         | 22.5     | 30.57   |
-| Information²                     |         | 10.2     | 14.8    |
-| Contingency                      |         | 2.6      | 1.2     |
+| Financial                        | 22.5    | 30.57    |
+| Information²                     | 10.2    | 14.8     |
+| Contingency                      | 2.6     | 1.2      |
 | **Remunerated functions**        |         |          |
-| Agency services³                 |         | 44.7     | 35.91   |
-| Payments                         |         | 22.41    | 19.88   |
-| Banking                          |         | 22.90    | 44.23   |
-| Other                            |         | 12.69    | 10.32   |
+| Agency services³                 | 44.7    | 35.91    |
+| Payments                         | 22.41   | 19.88    |
+| Banking                          | 22.90   | 44.23    |
+| Other                            | 12.69   | 10.32    |
 
 ---
 
-(1) Provisional total as of publication date.  
-(2) Costs associated with on-going information programmes.  
-(3) From the management accounts, net of recoveries and including interest charges
+¹ Provisional total as of publication date.  
+² Costs associated with on-going information programmes.  
+³ From the management accounts, net of recoveries and including interest charges
 
 
 **Table 21: footnotes replaced by additional table summary text**
@@ -294,27 +296,26 @@ Table 20: footnotes referenced from within a table
 
 **Table 22: referencing multiple endnotes from within a table**
 
-| Expenditure £m     | Notes                              | 2010   | 2011   |
-|--------------------|------------------------------------|--------|--------|
-|                    | (Notes located on page [n])        |        |        |
-| Information        | 1                                  | 10.2   | 14.8   |
-| Contingency        |                                    | 2.6    | 1.2    |
-| Payments           | 3                                  | 22.41  | 19.88  |
-| Banking services   | 4                                  | 22.90  | 44.23  |
-| Interest           |                                    | 0.23   | 0.10   |
-| Dividends          | 23                                 | 2.5    | 3.68   |
-| Other              | 9                                  | 12.69  | 10.32  |
+| Expenditure £m     | Notes                        | 2010   | 2011   |
+|--------------------|-----------------------------|--------|--------|
+|                    | (Notes located on page [n])  |        |        |
+| Information        | 1                            | 10.2   | 14.8   |
+| Contingency        |                              | 2.6    | 1.2    |
+| Payments           | 3                            | 22.41  | 19.88  |
+| Banking services   | 4                            | 22.90  | 44.23  |
+| Interest           |                              | 0.23   | 0.10   |
+| Dividends          | 23                           | 2.5    | 3.68   |
+| Other              | 9                            | 12.69  | 10.32  |
 
 ---
 
 **Table 23: simulated table created using tabs and containing no structure**
 
-|        | \multicolumn{2}{c|}{2008} | \multicolumn{2}{c|}{2009} |
-|--------|---------|-----------|---------|-----------|
-| Name   | Entered | Completed | Entered | Completed |
-| Bob    | 22      | 21        | 20      | 19        |
-| Sue    | 44      | 12        | 12      | 10        |
-
+|        |      | 2008         |      | 2009         |      |
+|--------|------|--------------|------|--------------|------|
+| Name   |      | Entered      | Completed | Entered      | Completed |
+| Bob    |      | 22           | 21   | 20           | 19   |
+| Sue    |      | 44           | 12   | 12           | 10   |
 
 
 Table 24: year-end financial statement (£, thousands)
@@ -357,13 +358,14 @@ Table 26: courses offered by Institution X. A = Bachelor of Science, B = Bachelo
 | **English**          | A, C | A, B | A, B | A, C |
 
 
+
 **Table 27: “table” with columns simulated by using tab stops**
 
-| Name                                 | Apples | Pears |
-|---------------------------------------|--------|-------|
-| Bob Scott                            | 20     | 25    |
-| Susan. P. Arnold-Jones, BA, FRSA, MD | 24     | 15    |
-| Sam Holder-Dickinson                 | 14     | 10    |
+| Name                                   | Apples | Pears |
+|-----------------------------------------|--------|-------|
+| Bob Scott                              | 20     | 25    |
+| Susan. P. Arnold-Jones, BA, FRSA, MD   | 24     | 15    |
+| Sam Holder-Dickinson                   | 14     | 10    |
 
 **Table 28: year-end financial table (£, thousands) – headings problem revisited**
 
@@ -384,24 +386,21 @@ Table 26: courses offered by Institution X. A = Bachelor of Science, B = Bachelo
 
 
 
-Table 29: multiple headers attributes for each data cell
+**Table 29: multiple headers attributes for each data cell**
 
-|                | South America | Asia   | Africa | Australia |
-|----------------|--------------|--------|--------|-----------|
-|                |              |        |        |           |
-| **2010**       |              |        |        |           |
-| **Highest average**      | 523.6        | 467.4  | 405.0  | 340.5     |
-| **Highest in 24 hours**  | 73.1         | 54.1   | 27.2   | 66.3      |
-| **Highest in 12 hours**  | 42.4         | 30.1   | 15.9   | 40.3      |
-|                |              |        |        |           |
-| **2009**       |              |        |        |           |
-| **Highest average**      | 487.7        | 453.6  | 398.7  | 356       |
-| **Highest in 24 hours**  | 67.2         | 53.2   | 44.3   | 53.8      |
-| **Highest in 12 hours**  | 34.7         | 34.1   | 29.8   | 31.0      |
-|                |              |        |        |           |
-| **2008**       |              |        |        |           |
-| **Highest average**      | 496.7        | 444.3  | 502.1  | 399.6     |
-| **Highest in 24 hours**  | 44.2         | 56.7   | 32.1   | 63.2      |
-| **Highest in 12 hours**  | 30.1         | 32.7   | 21.9   | 40.2      |
+|                  | South America | Asia   | Africa | Australia |
+|------------------|--------------|--------|--------|-----------|
+| **2010**         |              |        |        |           |
+| Highest average  | 523.6        | 467.4  | 405.0  | 340.5     |
+| Highest in 24 hours | 73.1      | 54.1   | 27.2   | 66.3      |
+| Highest in 12 hours | 42.4      | 30.1   | 15.9   | 40.3      |
+| **2009**         |              |        |        |           |
+| Highest average  | 487.7        | 453.6  | 398.7  | 356       |
+| Highest in 24 hours | 67.2      | 53.2   | 44.3   | 53.8      |
+| Highest in 12 hours | 34.7      | 34.1   | 29.8   | 31.0      |
+| **2008**         |              |        |        |           |
+| Highest average  | 496.7        | 444.3  | 502.1  | 399.6     |
+| Highest in 24 hours | 44.2      | 56.7   | 32.1   | 63.2      |
+| Highest in 12 hours | 30.1      | 32.7   | 21.9   | 40.2      |
 
 
