@@ -5,52 +5,52 @@
 [![OpenAI](https://img.shields.io/badge/openai-required-important)](https://platform.openai.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**datascav-switch** é um pacote Python para conversão inteligente de formatos de documentos, utilizando IA generativa (OpenAI) e arquitetura escalável. O projeto faz parte de uma suíte de ferramentas para automação, extração e transformação de dados.
+**datascav-switch** is a Python package for intelligent document format conversion, leveraging generative AI (OpenAI) and a scalable architecture. This project is part of a suite of tools for automation, data extraction, and transformation.
 
 ---
 
-## Principais Features
+## Main Features
 
-- Conversão de PDF para Markdown com preservação de layout
-- Suporte a múltiplos formatos de entrada (arquivo, URL, base64, bytes)
-- Processamento paralelo e logging dinâmico
-- Tracking detalhado de tokens
-- Integração nativa com [LangChain](https://github.com/langchain-ai/langchain) e tracing via LangSmith
+- PDF to Markdown conversion with layout preservation
+- Support for multiple input formats (file, URL, base64, bytes)
+- Parallel processing and dynamic logging
+- Detailed token tracking
+- Native integration with [LangChain](https://github.com/langchain-ai/langchain) and tracing via LangSmith
 
 ---
 
-## Instalação
+## Installation
 
 ```bash
 pip install datascav-switch
 ```
 
-> **Requisitos:**
+> **Requirements:**
 > - Python 3.10+
-> - Chave de API da OpenAI (`OPENAI_API_KEY`)
+> - OpenAI API key (`OPENAI_API_KEY`)
 
 ---
 
-## Uso Rápido
+## Quick Start
 
 ```python
 from scav_switch.converters.pdf import ScavToMarkdown
 scav = ScavToMarkdown(model='gpt-4.1', verbose=True)
-markdown = scav.dig('/caminho/para/arquivo.pdf')
+markdown = scav.dig('/path/to/file.pdf')
 print(markdown)
 ```
 
-Para exemplos completos e documentação detalhada, consulte a pasta [`docs/`](docs/) e os notebooks de cada módulo.
+For complete examples and detailed documentation, see the [`docs/`](docs/) folder and the notebooks for each module.
 
 ---
 
-## Documentação
+## Documentation
 
-- Documentação detalhada e exemplos de uso estão disponíveis em cada subpasta de [`docs/`](docs/), incluindo notebooks como [`docs/conveters/pdf/ScavToMarkdown/ScavToMarkdown.ipynb`](docs/conveters/pdf/ScavToMarkdown/ScavToMarkdown.ipynb).
-- Consulte também a [documentação oficial do LangChain](https://github.com/langchain-ai/langchain) para integração avançada.
+- Detailed documentation and usage examples are available in each [`docs/`](docs/) subfolder, including notebooks such as [`docs/conveters/pdf/ScavToMarkdown/ScavToMarkdown.ipynb`](docs/conveters/pdf/ScavToMarkdown/ScavToMarkdown.ipynb).
+- Also check the [official LangChain documentation](https://github.com/langchain-ai/langchain) for advanced integration.
 
 ---
 
-## Licença
+## License
 
 MIT
