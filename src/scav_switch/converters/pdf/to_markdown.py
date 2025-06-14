@@ -25,22 +25,25 @@ Saída:
 Returns a markdown string with the detailed PDF transcription via the dig() method.
 """
 
-from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage, SystemMessage
-from openai import APITimeoutError
-from scav_switch.converters.pdf.common import pdf_to_image_base64_list, pdf_to_pages_base64
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Optional, Callable, Any, Union
-from langchain.chat_models import init_chat_model
-import tempfile
 import base64
+import logging
 import os
+import tempfile
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Any, Callable, Optional, Union
+
 import openai
 import requests
-import logging
-from dotenv import load_dotenv
-from scav_switch.converters.pdf.exceptions import ModelIncompatibilityError
 import tiktoken
+from dotenv import load_dotenv
+from langchain.chat_models import init_chat_model
+from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_openai import ChatOpenAI
+from openai import APITimeoutError
+
+from scav_switch.converters.pdf.common import (pdf_to_image_base64_list,
+                                               pdf_to_pages_base64)
+from scav_switch.converters.pdf.exceptions import ModelIncompatibilityError
 
 load_dotenv(override=True)
 
@@ -50,7 +53,7 @@ class ScavToMarkdown:
     PDF to Markdown converter with support for multiple input formats
     and parameterized logging system.
     """
-    
+
     def __init__(
         self,
         model: str = "gpt-4.1",
@@ -65,7 +68,7 @@ class ScavToMarkdown:
     ):
         """
         Initializes the ScavToMarkdown converter.
-        
+
         Args:
             model: OpenAI model to use
             temperature: Temperature for text generation
@@ -87,7 +90,7 @@ class ScavToMarkdown:
         self.timeout = timeout
         self.max_workers = max_workers
         self.callbacks = callbacks
-        
+
         # Logging configuration
         self.verbose = verbose
         if logger is not None:
@@ -116,7 +119,7 @@ class ScavToMarkdown:
                           - Transcribe the observed layout (tables, bullets, etc.) to markdown format.
             """
         )
-        
+
         # Model initialization
         self.llm = ChatOpenAI(
             model=self.model,
@@ -125,9 +128,9 @@ class ScavToMarkdown:
             callbacks=self.callbacks,
             timeout=self.timeout
         )
-        
+
         self.logger.info(f'ScavToMarkdown initialized - Project: {os.getenv("LANGSMITH_PROJECT")}')
-    
+
     def _setup_logger(self, log_level: str) -> logging.Logger:
         """Configures the logging system with a friendly logger name."""
         logger = logging.getLogger("ScavToMarkdown")
@@ -140,24 +143,24 @@ class ScavToMarkdown:
             handler.setFormatter(formatter)
             logger.addHandler(handler)
         return logger
-    
+
     def _log(self, level: str, message: str) -> None:
         """Parameterized logging."""
         if not self.verbose:
             return
         log_method = getattr(self.logger, level.lower(), self.logger.info)
         log_method(message)
-    
+
     def _get_pdf_bytes(self, source: Union[str, bytes]) -> bytes:
         """
         Receives a file path, bytes, URL, or base64 string and returns the PDF bytes.
         """
         self._log("DEBUG", f"Processing input of type: {type(source)}")
-        
+
         if isinstance(source, bytes):
             self._log("DEBUG", "Input identified as bytes")
             return source
-        
+
         if isinstance(source, str):
             # Detect base64
             try:
@@ -165,14 +168,14 @@ class ScavToMarkdown:
                     b64_data = source.split(",", 1)[1]
                 else:
                     b64_data = source
-                
+
                 pdf_bytes = base64.b64decode(b64_data, validate=True)
                 if pdf_bytes[:4] == b"%PDF":
                     self._log("DEBUG", "Input identified as base64")
                     return pdf_bytes
             except Exception:
                 pass
-            
+
             # Check if URL
             if source.startswith('http://') or source.startswith('https://'):
                 self._log("DEBUG", f"Downloading PDF from URL: {source}")
@@ -180,35 +183,35 @@ class ScavToMarkdown:
                 if resp.status_code != 200:
                     raise ValueError(f"Failed to download PDF from URL: {source}")
                 return resp.content
-            
+
             # Check if file path
             if os.path.isfile(source):
                 self._log("DEBUG", f"Reading file: {source}")
                 with open(source, 'rb') as f:
                     return f.read()
-            
+
             raise ValueError("Provided string is not a valid file path, base64, or URL.")
-        
+
         raise TypeError("Input must be a file path, bytes, URL, or base64 string.")
-    
+
     def _retry_process_with_pdf(self, pdf_base64: str, page_index: int) -> dict:
         """Processes page using PDF format as fallback."""
         self._log("WARNING", f"Trying to process page {page_index} with PDF format")
-        
+
         pdf_bytes = base64.b64decode(pdf_base64)
-        
+
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
             tmp_file.write(pdf_bytes)
             tmp_file_path = tmp_file.name
-        
+
         try:
             with open(tmp_file_path, "rb") as f:
                 upload_response = openai.files.create(file=f, purpose="user_data")
         finally:
             os.remove(tmp_file_path)
-        
+
         llm_retry = init_chat_model(f"openai:{self.model}")
-        
+
         message = {
             "role": "user",
             "content": [
@@ -224,13 +227,14 @@ class ScavToMarkdown:
                 }
             ],
         }
-        
+
         response = llm_retry.invoke([SystemMessage(content=self.system_prompt), message])
         result = getattr(response, "content", str(response))
         formatted_result = result.replace('```markdown', '').replace('```', '')
-        
+
         # Token counting (input: prompt + file, output: result)
-        prompt_text = self.system_prompt + "\n" + "Transcribe the text from the provided image in markdown format, without omitting any text."
+        prompt_text = self.system_prompt + "\n" + \
+            "Transcribe the text from the provided image in markdown format, without omitting any text."
         input_tokens = self._count_tokens(prompt_text)
         output_tokens = self._count_tokens(formatted_result)
         total_tokens = input_tokens + output_tokens
@@ -245,24 +249,24 @@ class ScavToMarkdown:
             'total': total_tokens,
             'fallback_pdf': True
         })
-        
+
         self._log("DEBUG", f"Page {page_index} processed successfully")
-        
+
         return {
             'page': page_index,
             'data': formatted_result
         }
-    
+
     def _count_tokens(self, text: str, encoding_name: str = "cl100k_base") -> int:
         """Count tokens in a string using tiktoken."""
         enc = tiktoken.get_encoding(encoding_name)
         return len(enc.encode(text))
-    
+
     def _process_image(self, data: dict, pages_base64: list) -> dict:
         """Processes a single image page."""
         page_num = data.get("pagina")
         self._log("DEBUG", f"Processing page: {page_num}")
-        
+
         messages = [
             SystemMessage(content=self.system_prompt),
             HumanMessage(
@@ -277,19 +281,20 @@ class ScavToMarkdown:
                 ]
             )
         ]
-        
+
         try:
             response = self.llm.invoke(messages)
         except APITimeoutError:
             self._log("WARNING", f"Timeout on page {page_num} - Trying with PDF")
             pdf_base64 = pages_base64[page_num]
             return self._retry_process_with_pdf(pdf_base64, page_num)
-        
+
         result = getattr(response, "content", str(response))
         formatted_result = result.replace('```markdown', '').replace('```', '')
 
         # Token counting (input: prompt + image, output: result)
-        prompt_text = self.system_prompt + "\n" + "Transcribe the text from the provided image in markdown format, without omitting any text."
+        prompt_text = self.system_prompt + "\n" + \
+            "Transcribe the text from the provided image in markdown format, without omitting any text."
         input_tokens = self._count_tokens(prompt_text)
         output_tokens = self._count_tokens(formatted_result)
         total_tokens = input_tokens + output_tokens
@@ -303,48 +308,48 @@ class ScavToMarkdown:
             'output': output_tokens,
             'total': total_tokens
         })
-        
+
         self._log("DEBUG", f"Page {page_num} processed successfully")
-        
+
         return {
             'page': page_num,
             'data': formatted_result
         }
-    
+
     def dig(self, pdf_input: Union[str, bytes]) -> str:
         """
         Main method to transcribe PDF to markdown.
-        
+
         Args:
             pdf_input: PDF input (file_path, bytes, URL, or base64)
-            
+
         Returns:
             Markdown string with the PDF transcription
         """
         self._log("INFO", "Starting PDF to Markdown conversion process")
-        
+
         try:
             pdf_bytes = self._get_pdf_bytes(pdf_input)
             self._log("INFO", f"PDF loaded successfully - {len(pdf_bytes)} bytes")
         except Exception as e:
             self._log("ERROR", f"Error getting PDF bytes: {e}")
             raise RuntimeError(f"Error getting PDF bytes: {e}")
-        
+
         temp_pdf_path = None
         try:
             # Create temporary file
             with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
                 tmp_file.write(pdf_bytes)
                 temp_pdf_path = tmp_file.name
-            
+
             self._log("DEBUG", f"Temporary file created: {temp_pdf_path}")
-            
+
             # Extract images and pages
             img_b64_list = pdf_to_image_base64_list(temp_pdf_path)
             pages_base64 = pdf_to_pages_base64(temp_pdf_path)
-            
+
             self._log("INFO", f"Extracted {len(img_b64_list)} pages from PDF")
-            
+
         finally:
             # Clean up temporary file
             if temp_pdf_path and os.path.exists(temp_pdf_path):
@@ -353,23 +358,23 @@ class ScavToMarkdown:
                     self._log("DEBUG", "Temporary file removed")
                 except Exception as e:
                     self._log("WARNING", f"Error removing temporary file: {e}")
-        
+
         # Prepare page data
         pages = [
-            {'pagina': index, 'data': bytes64} 
+            {'pagina': index, 'data': bytes64}
             for index, bytes64 in enumerate(img_b64_list)
         ]
-        
+
         self._log("INFO", f"Starting parallel processing with {self.max_workers} workers")
-        
+
         # Parallel processing
         transcribed_pages = []
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             futures = [
-                executor.submit(self._process_image, page, pages_base64) 
+                executor.submit(self._process_image, page, pages_base64)
                 for page in pages
             ]
-            
+
             for future in as_completed(futures):
                 try:
                     result = future.result()
@@ -377,16 +382,16 @@ class ScavToMarkdown:
                     self._log("DEBUG", f"Page {result.get('page', result.get('pagina'))} transcribed")
                 except Exception as e:
                     self._log("ERROR", f"Error processing page: {e}")
-        
+
         # Sort pages and concatenate result
         transcribed_pages.sort(key=lambda x: x.get('page', x.get('pagina')))
-        
+
         transcription = ''
         for page in transcribed_pages:
             transcription += page['data'] + '\n'
-        
+
         self._log("INFO", f"Conversion completed - {len(transcription)} characters generated")
-        
+
         return transcription
 
 

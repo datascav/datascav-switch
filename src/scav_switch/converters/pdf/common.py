@@ -1,6 +1,8 @@
 import base64
 from typing import List
-import fitz  
+
+import fitz
+
 
 def pdf_to_image_base64_list(pdf_path: str, zoom: float = 2.0) -> List[str]:
     """
@@ -29,6 +31,7 @@ def pdf_to_image_base64_list(pdf_path: str, zoom: float = 2.0) -> List[str]:
         return []
     return images_base64
 
+
 def pdf_to_pages_base64(pdf_path: str) -> list:
     """
     Reads a PDF file and returns a list of base64 strings, each representing a single page of the PDF as an individual PDF file.
@@ -54,4 +57,3 @@ def pdf_to_pages_base64(pdf_path: str) -> list:
         print(f"Error processing PDF: {e}")
         return []
     return pages_base64
-
