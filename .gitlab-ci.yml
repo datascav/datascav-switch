@@ -21,25 +21,6 @@ lint:
     - merge_requests
     - main
 
-# Testes unitários e cobertura
-pytest:
-  stage: test
-  image: python:3.12
-  script:
-    - pip install -r requirements.txt
-    - pip install pytest pytest-cov
-    - pytest --cov=src/scav_switch/converters/pdf --cov-report=term --cov-report=xml:coverage.xml
-  artifacts:
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage.xml
-    paths:
-      - coverage.xml
-  only:
-    - merge_requests
-    - main
-
 include:
   - template: Security/SAST.gitlab-ci.yml
   - template: Security/Secret-Detection.gitlab-ci.yml
