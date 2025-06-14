@@ -1,3 +1,13 @@
+"""
+Utility functions for converting PDF to base64 images and base64 pages.
+
+Dependencies:
+- fitz (PyMuPDF)
+- base64
+
+Output:
+- List of base64 strings of PNG images or PDF pages.
+"""
 import base64
 from typing import List
 
@@ -27,8 +37,11 @@ def pdf_to_image_base64_list(pdf_path: str, zoom: float = 2.0) -> List[str]:
             image_base64 = image_base64.decode('utf-8')
             images_base64.append(image_base64)
         pdf_document.close()
+    except fitz.fitz.FileDataError as e:
+        print(f"Error processing PDF (FileDataError): {e}")
+        return []
     except Exception as e:
-        print(f"Error processing PDF: {e}")
+        print(f"Unexpected error processing PDF: {e}")
         return []
     return images_base64
 
@@ -48,13 +61,18 @@ def pdf_to_pages_base64(pdf_path: str) -> list:
         pdf_document = fitz.open(pdf_path)
         for page_number in range(pdf_document.page_count):
             single_page_pdf = fitz.open()  # create a new empty PDF
-            single_page_pdf.insert_pdf(pdf_document, from_page=page_number, to_page=page_number)
+            single_page_pdf.insert_pdf(
+                pdf_document, from_page=page_number, to_page=page_number
+            )
             buffer = single_page_pdf.write()
             page_base64 = base64.b64encode(buffer).decode('utf-8')
             pages_base64.append(page_base64)
             single_page_pdf.close()
         pdf_document.close()
+    except fitz.fitz.FileDataError as e:
+        print(f"Error processing PDF (FileDataError): {e}")
+        return []
     except Exception as e:
-        print(f"Error processing PDF: {e}")
+        print(f"Unexpected error processing PDF: {e}")
         return []
     return pages_base64

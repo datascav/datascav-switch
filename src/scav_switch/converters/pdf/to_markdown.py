@@ -133,7 +133,7 @@ class ScavToMarkdown:
         )
 
         self.logger.info(
-            f'ScavToMarkdown initialized - Project: {os.getenv("LANGSMITH_PROJECT")}'
+            'ScavToMarkdown initialized - Project: %s', os.getenv("LANGSMITH_PROJECT")
         )
 
     def _setup_logger(self, log_level: str) -> logging.Logger:
@@ -178,13 +178,13 @@ class ScavToMarkdown:
                 if pdf_bytes[:4] == b"%PDF":
                     self._log("DEBUG", "Input identified as base64")
                     return pdf_bytes
-            except Exception:
+            except (base64.binascii.Error, ValueError):
                 pass
 
             # Check if URL
             if source.startswith('http://') or source.startswith('https://'):
                 self._log("DEBUG", f"Downloading PDF from URL: {source}")
-                resp = requests.get(source)
+                resp = requests.get(source, timeout=self.timeout)
                 if resp.status_code != 200:
                     raise ValueError(f"Failed to download PDF from URL: {source}")
                 return resp.content
@@ -339,10 +339,10 @@ class ScavToMarkdown:
 
         try:
             pdf_bytes = self._get_pdf_bytes(pdf_input)
-            self._log("INFO", f"PDF loaded successfully - {len(pdf_bytes)} bytes")
+            self._log("INFO", "PDF loaded successfully - %d bytes", len(pdf_bytes))
         except Exception as e:
-            self._log("ERROR", f"Error getting PDF bytes: {e}")
-            raise RuntimeError(f"Error getting PDF bytes: {e}")
+            self._log("ERROR", "Error getting PDF bytes: %s", e)
+            raise RuntimeError(f"Error getting PDF bytes: {e}") from e
 
         temp_pdf_path = None
         try:
@@ -365,8 +365,8 @@ class ScavToMarkdown:
                 try:
                     os.remove(temp_pdf_path)
                     self._log("DEBUG", "Temporary file removed")
-                except Exception as e:
-                    self._log("WARNING", f"Error removing temporary file: {e}")
+                except OSError as e:
+                    self._log("WARNING", "Error removing temporary file: %s", e)
 
         # Prepare page data
         pages = [
@@ -388,9 +388,11 @@ class ScavToMarkdown:
                 try:
                     result = future.result()
                     transcribed_pages.append(result)
-                    self._log("DEBUG", f"Page {result.get('page', result.get('pagina'))} transcribed")
+                    self._log(
+                        "DEBUG", "Page %s transcribed", result.get('page', result.get('pagina'))
+                    )
                 except Exception as e:
-                    self._log("ERROR", f"Error processing page: {e}")
+                    self._log("ERROR", "Error processing page: %s", e)
 
         # Sort pages and concatenate result
         transcribed_pages.sort(key=lambda x: x.get('page', x.get('pagina')))
