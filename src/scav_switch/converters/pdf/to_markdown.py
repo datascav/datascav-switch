@@ -58,6 +58,8 @@ class ScavToMarkdown:
 
     def __init__(
         self,
+        api_key: str = os.getenv("OPENAI_API_KEY"),
+        provider: str = "openai",
         model: str = "gpt-4.1",
         temperature: float = 0,
         max_tokens: int = 2048,
@@ -66,6 +68,7 @@ class ScavToMarkdown:
         verbose: bool = True,
         log_level: str = "INFO",
         callbacks: Optional[list[Callable[..., Any]]] = None,
+        api_url: str = None,
         logger: logging.Logger = None
     ):
         """
@@ -87,6 +90,9 @@ class ScavToMarkdown:
                 f"Model '{model}' is not compatible. Only 'gpt-4.1' and 'gpt-4o' are supported for PDF to Markdown conversion."
             )
 
+        self.api_key = api_key
+        self.provider = provider
+        self.api_url = api_url
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
@@ -124,13 +130,23 @@ class ScavToMarkdown:
         )
 
         # Model initialization
-        self.llm = ChatOpenAI(
-            model=self.model,
-            temperature=self.temperature,
-            max_tokens=self.max_tokens,
-            callbacks=self.callbacks,
-            timeout=self.timeout
-        )
+        if self.api_url is not None:
+            self.llm = ChatOpenAI(
+                model=self.model,
+                temperature=self.temperature,
+                max_tokens=self.max_tokens,
+                callbacks=self.callbacks,
+                timeout=self.timeout,
+                api_url=self.api_url
+            )
+        else:
+            self.llm = ChatOpenAI(
+                model=self.model,
+                temperature=self.temperature,
+                max_tokens=self.max_tokens,
+                callbacks=self.callbacks,
+                timeout=self.timeout
+            )
 
         self._log(
             'INFO', 'ScavToMarkdown initialized - Project: %s' % os.getenv("LANGSMITH_PROJECT")
