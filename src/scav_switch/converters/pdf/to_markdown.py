@@ -75,6 +75,9 @@ class ScavToMarkdown:
         Initializes the ScavToMarkdown converter.
 
         Args:
+            api_key: API key for the provider
+            provider: Provider to use (openai, openrouter)
+            api_url: API URL for the provider
             model: OpenAI model to use
             temperature: Temperature for text generation
             max_tokens: Maximum number of tokens
@@ -85,9 +88,9 @@ class ScavToMarkdown:
             callbacks: LangChain callbacks for tracing
             logger: Optional custom logger instance (for dynamic override)
         """
-        if model not in ("gpt-4.1", "gpt-4o"):
+        if not api_url and model not in ("gpt-4.1", "gpt-4o", "gpt-5", "gpt-5.1", "gpt-5.1-mini", "gpt-5.1-nano", "gpt-5-nano", "gpt-5-mini", "gpt-5-nano", "gpt-5-mini-nano", "gpt-5-nano-mini"):
             raise ModelIncompatibilityError(
-                f"Model '{model}' is not compatible. Only 'gpt-4.1' and 'gpt-4o' are supported for PDF to Markdown conversion."
+                f"Model '{model}' is not compatible."
             )
 
         self.api_key = api_key
@@ -132,12 +135,13 @@ class ScavToMarkdown:
         # Model initialization
         if self.api_url is not None:
             self.llm = ChatOpenAI(
+                api_key=self.api_key,
                 model=self.model,
                 temperature=self.temperature,
                 max_tokens=self.max_tokens,
                 callbacks=self.callbacks,
                 timeout=self.timeout,
-                api_url=self.api_url
+                base_url=self.api_url
             )
         else:
             self.llm = ChatOpenAI(

@@ -2,12 +2,20 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.ignored/
+.ignored/*
+*.pdf
+*.ipynb
 
 # Ambientes virtuais
 venv/
 env/
 .venv/
 .env/
+.ENV 
+.env.local
+.env.* 
+.env
 
 # Arquivos de configuração de IDEs
 .vscode/
@@ -41,3 +49,6 @@ Thumbs.db
 # Arquivos de cache do pip
 pip-wheel-metadata/
 # End Generation Here
+
+
+*.ipynb
